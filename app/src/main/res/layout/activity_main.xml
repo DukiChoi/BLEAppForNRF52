@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="onWarningButtonClicked"
+        android:text="경고 레아이웃"
+        app:layout_constraintEnd_toEndOf="@+id/button_setting"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/button_setting"
+        app:layout_constraintTop_toBottomOf="@+id/button_setting" />
+
+    <Button
+        android:id="@+id/button_TCP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="onTCPButtonClicked"
+        android:text="Server and Client"
+        app:layout_constraintEnd_toEndOf="@+id/button_internet"
+        app:layout_constraintStart_toStartOf="@+id/button_internet"
+        app:layout_constraintTop_toBottomOf="@+id/button_internet" />
+
+    <Button
+        android:id="@+id/button_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="onInternetButtonClicked"
+        android:text="인터넷"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_gethttp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="onGethttpButtonClicked"
+        android:text="GET HTTP"
+        app:layout_constraintEnd_toEndOf="@+id/button_TCP"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="@+id/button_TCP"
+        app:layout_constraintTop_toBottomOf="@+id/button_TCP" />
+
+    <Button
+        android:id="@+id/button_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="onSettingButtonClicked"
+        android:text="세팅 레이아웃"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="42dp"
+        android:layout_height="733dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+    <Button
+        android:id="@+id/BluetoothButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="onBluetoothButtonClicked"
+        android:text="블루투스"
+        app:layout_constraintEnd_toEndOf="@+id/button_gethttp"
+        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintStart_toStartOf="@+id/button_gethttp"
+        app:layout_constraintTop_toBottomOf="@+id/button_gethttp" />
+
+    <Button
+        android:id="@+id/button_BLEScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="onBLEScanButtonClicked"
+        android:text="BLE SCAN CHAT"
+        app:layout_constraintEnd_toEndOf="@+id/BluetoothButton"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="@+id/BluetoothButton"
+        app:layout_constraintTop_toBottomOf="@+id/BluetoothButton" />
+
+    <Button
+        android:id="@+id/button_gattserver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="onNUSButtonClicked"
+        android:text="NUS"
+        app:layout_constraintEnd_toEndOf="@+id/button_BLEScan"
+        app:layout_constraintHorizontal_bias="0.446"
+        app:layout_constraintStart_toStartOf="@+id/button_BLEScan"
+        app:layout_constraintTop_toBottomOf="@+id/button_BLEScan" />
+
+    <Button
+        android:id="@+id/button_http"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="onHTTPButtonClicked"
+        android:text="HTTP GET/POST"
+        app:layout_constraintEnd_toEndOf="@+id/button_warning"
+        app:layout_constraintHorizontal_bias="0.464"
+        app:layout_constraintStart_toStartOf="@+id/button_warning"
+        app:layout_constraintTop_toBottomOf="@+id/button_warning" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
