@@ -114,21 +114,21 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
      * Temperature Measurement</a>
      */
 
-    //이건 폰 쪽 RxChar UUID 설정 부분 (peripheral 입장에서 보내는 Char 즉 이 폰에서는 read and get notified.)
+    //이건 폰 쪽 RxChar UUID 설정 부분 (peripheral 입장에서 받는 Char ... 이 폰은 peripheral이므로 getting notified..)
     private static final UUID SEND_UUID = UUID
-            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCC");  //RxChar UUID
+            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCC");  //상대의 TxChar UUID
     private static final int SEND_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
     private static final String SEND_DESCRIPTION = "This characteristic is used " +
             "as TxChar Nordic Uart device";
 
 
-    //이건 폰 쪽 TxChar UUID 설정 부분 (peripheral 입장에서 받아오는 Char 즉 이 폰에서는 Write.)
+    //이건 폰 쪽 TxChar UUID 설정 부분 (peripheral 입장에서 받아오는 Char. 즉 이 폰에서는 Write.)
     /**
      * See <a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.measurement_interval.xml">
      * Measurement Interval</a>
      */
     private static final UUID RECIEVE_UUID = UUID
-            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCC");  //TxChar UUID
+            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCC");  //상대의 RxChar UUID
     private static final int RECEIVE_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
 
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
     private final long finishtime = 1000;
     private long presstime = 0;
     public static int alert_mode = 0;
-    public static String device_name = "";
+    public static String device_name = "Bluefruit52 Central";
 
     public int connected_count = 0;
 

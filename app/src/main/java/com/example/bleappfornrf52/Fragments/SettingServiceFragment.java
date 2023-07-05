@@ -83,7 +83,7 @@ public class SettingServiceFragment extends ServiceFragment {
     private static final int INITIAL_RECEIVE = 0;
     //이게 프라이머리 서비스
     private static final UUID UART_SERVICE_UUID = UUID
-            .fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
+            .fromString("6E400001-B5A3-F393-E0A9-E50E24DCC");
 
     /**
      * See <a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.temperature_measurement.xml">
@@ -92,7 +92,7 @@ public class SettingServiceFragment extends ServiceFragment {
 
     //이건 TxChar UUID 설정 부분 (보내는 Char)
     private static final UUID SEND_UUID = UUID
-            .fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e");  //RxChar UUID
+            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCC");  //RxChar UUID
     private static final int SEND_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
     private static final String SEND_DESCRIPTION = "This characteristic is used " +
             "as TxChar Nordic Uart device";
@@ -104,7 +104,7 @@ public class SettingServiceFragment extends ServiceFragment {
      * Measurement Interval</a>
      */
     private static final UUID RECIEVE_UUID = UUID
-            .fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");  //TxChar UUID
+            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCC");  //TxChar UUID
     private static final int RECEIVE_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
 
 
