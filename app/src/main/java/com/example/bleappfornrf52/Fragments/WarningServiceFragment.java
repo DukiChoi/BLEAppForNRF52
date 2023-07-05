@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
-import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -31,7 +30,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -40,9 +38,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.example.bleappfornrf52.Fragments.ServiceFragment;
 import com.example.bleappfornrf52.R;
-import com.example.bleappfornrf52.WarningActivity;
+import com.example.bleappfornrf52.MainActivity;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -143,6 +140,9 @@ public class WarningServiceFragment extends ServiceFragment {
     private TextView mTextViewDistanceValue1;
     private TextView mTextViewDistanceValue2;
     private TextView mTextViewDistanceValue3;
+    private TextView mMagValuex;
+    private TextView mMagValuey;
+    private TextView mMagValuez;
     //이건 Text Editor에 수정을 할 시에 그걸 가지고 보낼 값(Characteristic Value)을 바꾸는 것.
     private final OnEditorActionListener mOnEditorActionListenerSend = new OnEditorActionListener() {
         @Override
@@ -157,7 +157,7 @@ public class WarningServiceFragment extends ServiceFragment {
                     //두번째. int로 바꾸기
                     int newSendValue = Integer.parseInt(newSENDValueString);
 
-                    WarningActivity.mSendCharacteristic.setValue(newSendValue,
+                    MainActivity.mSendCharacteristic.setValue(newSendValue,
                             SEND_VALUE_FORMAT,
                             /* offset */ 0);
                 } else {
@@ -179,7 +179,7 @@ public class WarningServiceFragment extends ServiceFragment {
                 if (isValidCharacteristicValue(newReceiveValueString,
                         RECEIVE_VALUE_FORMAT)) {
                     int newReceiveValue = Integer.parseInt(newReceiveValueString);
-                    WarningActivity.mReceiveCharacteristic.setValue(newReceiveValue,
+                    MainActivity.mReceiveCharacteristic.setValue(newReceiveValue,
                             RECEIVE_VALUE_FORMAT,
                             /* offset */ 1);
                 } else {
@@ -192,7 +192,7 @@ public class WarningServiceFragment extends ServiceFragment {
     };
 
 
-    private static final String TAG = WarningActivity.class.getCanonicalName();
+    private static final String TAG = MainActivity.class.getCanonicalName();
     //이 부분은 Send하는 부분이라 Warning에서는 주석처리함.
 //  //이건 Notify 버튼 즉 Send 버튼을 리스닝 해주는 함수
 //  private final View.OnClickListener mNotifyButtonListener = new View.OnClickListener() {
@@ -224,7 +224,7 @@ public class WarningServiceFragment extends ServiceFragment {
         public void onClick(View v) {
             //알람 정지
 
-            if (WarningActivity.alert_mode == 1){
+            if (MainActivity.alert_mode == 1){
                 alert_stop_special();
                 alert_value1_temp = alert_value1;
                 getView().setBackgroundColor(Color.WHITE);
@@ -299,6 +299,12 @@ public class WarningServiceFragment extends ServiceFragment {
                 .findViewById(R.id.Textview_distance_warning);
         mTextViewDistanceValue3 = (TextView) view
                 .findViewById(R.id.Textview_distance_safe);
+        mMagValuex = (TextView) view
+                .findViewById(R.id.textView_mag_x);
+        mMagValuey = (TextView) view
+                .findViewById(R.id.textView_mag_y);
+        mMagValuez = (TextView) view
+                .findViewById(R.id.textView_mag_z);
         //여기서 Editor 리스너를 써줬기는 한데 여기선 사실상 필요가 없다.(EditText 대신 TextView 써줘서 ㅇㅇ)
 //    mTextViewReceiveValue1
 //            .setOnEditorActionListener(mOnEditorActionListenerReceive);
@@ -308,19 +314,19 @@ public class WarningServiceFragment extends ServiceFragment {
 //    notifyButton.setOnClickListener(mNotifyButtonListener);
 //    setSendValue(INITIAL_SEND, INITIAL_RECEIVE);
         byte[] value = {0,0,0,0,0,0,0,0};
-        int[] members = classification(value);
-        int value1 = members[0];
-        int value2 = members[1];
-        int value3 = members[2];
+        //int[] members = classification(value);
+//        int value1 = members[0];
+//        int value2 = members[1];
+//        int value3 = members[2];
         //두번째 방법, Integer로 받기([값]형태)
         //mTextViewReceiveValue.setText(Arrays.toString(value));
 
-        mTextViewReceiveValue1.setText(Integer.toString(value1));
-        mTextViewReceiveValue2.setText(Integer.toString(value2));
-        mTextViewReceiveValue3.setText(Integer.toString(value3));
-        mTextViewDistanceValue1.setText(WarningActivity.distance_setting_value1);
-        mTextViewDistanceValue2.setText(WarningActivity.distance_setting_value2);
-        mTextViewDistanceValue3.setText(WarningActivity.distance_setting_value3);
+        mTextViewReceiveValue1.setText("0");
+        mTextViewReceiveValue2.setText("0");
+        mTextViewReceiveValue3.setText("0");
+        mTextViewDistanceValue1.setText(MainActivity.distance_setting_value1);
+        mTextViewDistanceValue2.setText(MainActivity.distance_setting_value2);
+        mTextViewDistanceValue3.setText(MainActivity.distance_setting_value3);
         return view;
     }
 
@@ -361,7 +367,7 @@ public class WarningServiceFragment extends ServiceFragment {
 
     @Override
     public BluetoothGattService getBluetoothGattService() {
-        return WarningActivity.mBluetoothGattService;
+        return MainActivity.mBluetoothGattService;
     }
 
     @Override
@@ -388,18 +394,18 @@ public class WarningServiceFragment extends ServiceFragment {
         //보낼 값이니까 Send Characteristic(TxChar)의 value 값을 변경해주는데 byte array형식으로 집어넣는다.
         //이건 앞으로 (uint8형식으로 넣는다는 뜻) flag를 8(uint8)로 맞춰주는 것.
         //mSendCharacteristic.setValue(new byte[]{0b00001000, 0, 0, 0});
-        WarningActivity.mSendCharacteristic.setValue(new byte[]{0});
+        MainActivity.mSendCharacteristic.setValue(new byte[]{0});
         //mReceiveCharacteristic.setValue(new byte[]{0b00001000, 0, 0, 0});
-        WarningActivity.mReceiveCharacteristic.setValue(new byte[]{0});
+        MainActivity.mReceiveCharacteristic.setValue(new byte[]{0});
 
         // Characteristic Value: [flags, 0, 0, 0]
 
 
-        WarningActivity.mSendCharacteristic.setValue(SendValue,
+        MainActivity.mSendCharacteristic.setValue(SendValue,
                 SEND_VALUE_FORMAT,
                 /* offset */ 1);
 
-        WarningActivity.mReceiveCharacteristic.setValue(ReceiveValue,
+        MainActivity.mReceiveCharacteristic.setValue(ReceiveValue,
                 RECEIVE_VALUE_FORMAT,
                 /* offset */ 1);
         // Characteristic Value: [flags, heart rate value, 0, 0]
@@ -435,10 +441,9 @@ public class WarningServiceFragment extends ServiceFragment {
                 alert_value1 = members[0];
                 alert_value2 = members[1];
                 alert_value3 = members[2];
-                WarningActivity.distance_setting_value1 = Integer.toString(Byte.toUnsignedInt(value[8])) + "m";;
-                WarningActivity.distance_setting_value2 = Integer.toString(Byte.toUnsignedInt(value[9])) + "m";;
-                WarningActivity.distance_setting_value3 = Integer.toString(Byte.toUnsignedInt(value[10])) + "m";;
-
+                MainActivity.distance_setting_value1 = Integer.toString(Byte.toUnsignedInt(value[8])) + "m";
+                MainActivity.distance_setting_value2 = Integer.toString(Byte.toUnsignedInt(value[9])) + "m";
+                MainActivity.distance_setting_value3 = Integer.toString(Byte.toUnsignedInt(value[10])) + "m";
                 Log.v(TAG, "members are: " + alert_value1 + ", " + alert_value2 + ", " + alert_value3);
                 //두번째 방법, Integer로 받기([값]형태)
                 //mTextViewReceiveValue.setText(Arrays.toString(value));
@@ -446,20 +451,23 @@ public class WarningServiceFragment extends ServiceFragment {
                 mTextViewReceiveValue1.setText(String.valueOf(alert_value1));
                 mTextViewReceiveValue2.setText(String.valueOf(alert_value2));
                 mTextViewReceiveValue3.setText(String.valueOf(alert_value3));
-                mTextViewDistanceValue1.setText(WarningActivity.distance_setting_value1);
-                mTextViewDistanceValue2.setText(WarningActivity.distance_setting_value2);
-                mTextViewDistanceValue3.setText(WarningActivity.distance_setting_value3);
+                mTextViewDistanceValue1.setText(MainActivity.distance_setting_value1);
+                mTextViewDistanceValue2.setText(MainActivity.distance_setting_value2);
+                mTextViewDistanceValue3.setText(MainActivity.distance_setting_value3);
+                mMagValuex.setText(MainActivity.magnetic_value_x);
+                mMagValuey.setText(MainActivity.magnetic_value_y);
+                mMagValuez.setText(MainActivity.magnetic_value_z);
                 //위험반경 내부로 들어간 작업자기 생기면 알림
-                if(alert_value1 > 0  && WarningActivity.alert_mode == 0){
+                if(alert_value1 > 0  && MainActivity.alert_mode == 0){
                     //진동 및 알림
                     alert();
                 }
                 //위험반경 내부에 있지 않게 되면 알람을 정지
-                else if (alert_value1 == 0 && WarningActivity.alert_mode == 1){
+                else if (alert_value1 == 0 && MainActivity.alert_mode == 1){
                     alert_stop();
                     getView().setBackgroundColor(Color.WHITE);
                 }
-                else if(WarningActivity.alert_mode == 3){
+                else if(MainActivity.alert_mode == 3){
                     if(alert_value1 > alert_value1_temp)
                         alert();
                     else if(alert_value1 < alert_value1_temp){
@@ -561,19 +569,38 @@ public class WarningServiceFragment extends ServiceFragment {
         //테스트값: 4, 9, 16, 18
         //0001010202030303010203
         //0002010202030303010203
-        byte[] test_value = {0x00, 0x01, 0x01, 0x02, 0x02, 0x03, 0x03, 0x03};
+        int[] xyzlocation = {0,0,0};
+        byte[] x_mag = {};
+        byte[] y_mag = {};
+        byte[] z_mag = {};
         int[] member_for_distances = {0, 0, 0};
+        for(int i = 0; i < value.length; i++ ){
+            if(value[i] == 0x78){
+                xyzlocation[0] = i;
+            }else if(value[i] == 0x79){
+                xyzlocation[1] = i;
+            }else if(value[i] == 0x7A){
+                xyzlocation[2] = i;
+            }
+        }
+        //x:숫자y:숫자z:숫자 이런 식으로 되어있어서 고려해줘서 1이 아닌 2를 빼야되네..
+        System.arraycopy(value, xyzlocation[0]+2, x_mag, 0, xyzlocation[1]-xyzlocation[0]-2);
+        System.arraycopy(value, xyzlocation[0]+2, y_mag, 0, xyzlocation[1]-xyzlocation[0]-2);
+        System.arraycopy(value, xyzlocation[0]+2, z_mag, 0, xyzlocation[1]-xyzlocation[0]-2);
+        MainActivity.magnetic_value_x = bytesToString(x_mag);
+        MainActivity.magnetic_value_y = bytesToString(y_mag);
+        MainActivity.magnetic_value_z = bytesToString(z_mag);
         for(int i = 0; i < 4; i++){
             //위험반경인 사람 수
-            if(value[2*i+1] == 0x01){
+            if(Math.abs(Float.parseFloat(bytesToString(x_mag))) > 1000){
                 member_for_distances[0]++;
             }
             //경고반경인 사람 수
-            else if(value[2*i+1] == 0x02){
+            else if(Math.abs(Float.parseFloat(bytesToString(y_mag))) > 500){
                 member_for_distances[1]++;
             }
             //접근반경인 사람 수;
-            else if(value[2*i+1] == 0x03){
+            else if(Math.abs(Float.parseFloat(bytesToString(z_mag))) > 0){
                 member_for_distances[2]++;
             }
         }
@@ -582,8 +609,8 @@ public class WarningServiceFragment extends ServiceFragment {
     @Override
     public void SendDisconnection(){
         byte[] disconnectionValue = {99};
-        WarningActivity.mSendCharacteristic.setValue(disconnectionValue);
-        mDelegate.sendNotificationToDevices(WarningActivity.mSendCharacteristic);
+        MainActivity.mSendCharacteristic.setValue(disconnectionValue);
+        mDelegate.sendNotificationToDevices(MainActivity.mSendCharacteristic);
         Log.v(TAG, "sent disconnetionValue: " + Arrays.toString(disconnectionValue));
     }
 

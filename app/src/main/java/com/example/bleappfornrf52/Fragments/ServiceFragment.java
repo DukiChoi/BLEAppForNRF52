@@ -15,14 +15,13 @@
  */
 
 package com.example.bleappfornrf52.Fragments;
-import static com.example.bleappfornrf52.WarningActivity.distance_setting_value1;
-import static com.example.bleappfornrf52.WarningActivity.distance_setting_value2;
-import static com.example.bleappfornrf52.WarningActivity.distance_setting_value3;
+import static com.example.bleappfornrf52.MainActivity.distance_setting_value1;
+import static com.example.bleappfornrf52.MainActivity.distance_setting_value2;
+import static com.example.bleappfornrf52.MainActivity.distance_setting_value3;
 import static com.example.bleappfornrf52.Fragments.WarningServiceFragment.alert_value1;
-import android.annotation.SuppressLint;
+
 import android.app.Fragment;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.graphics.Color;
@@ -30,7 +29,6 @@ import android.media.MediaPlayer;
 import android.os.ParcelUuid;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
@@ -41,13 +39,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.bleappfornrf52.R;
-import com.example.bleappfornrf52.Services.AppHelper;
-import com.example.bleappfornrf52.WarningActivity;
+import com.example.bleappfornrf52.MainActivity;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 public abstract class ServiceFragment extends Fragment{
     public abstract BluetoothGattService getBluetoothGattService();
@@ -56,7 +52,7 @@ public abstract class ServiceFragment extends Fragment{
     public static MediaPlayer player = null;
     public static Thread triggerService = null;
     public static Animation anim = null;
-    public static final String TAG = WarningActivity.TAG;
+    public static final String TAG = MainActivity.TAG;
     public static final String url = "http://192.168.0.9:8080";
     /**
      * Function to communicate to the ServiceFragment that a device wants to write to a
@@ -111,9 +107,9 @@ public abstract class ServiceFragment extends Fragment{
     //경고음 쓰레드
     public void alert(){
         //경고임을 알려주는 변수 1로 만들음
-        WarningActivity.alert_mode = 1;
+        MainActivity.alert_mode = 1;
         player_and_anim();
-        vibrator = (Vibrator) WarningActivity.context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator = (Vibrator) MainActivity.context.getSystemService(Context.VIBRATOR_SERVICE);
 
         //여기서 HTTP POST로 위험반경 태그 수 보내준다.
         POSTRequest("W");
@@ -129,7 +125,7 @@ public abstract class ServiceFragment extends Fragment{
                         Thread.sleep(2000);
                     } catch (InterruptedException e){
                         //이건 아예 스탑
-                        if(WarningActivity.alert_mode ==0) {
+                        if(MainActivity.alert_mode ==0) {
                             if (player != null) {
                                 player.stop();
                                 Log.v(TAG, "경고음 stop");
@@ -142,20 +138,20 @@ public abstract class ServiceFragment extends Fragment{
                             e.printStackTrace();
                         }
                         //이건 일시정지
-                        else if(WarningActivity.alert_mode == 2) {
+                        else if(MainActivity.alert_mode == 2) {
                             try {
                                 anim.cancel();
                                 player.stop();
                                 Thread.sleep(5000);
                                 //플레이어랑 애니메 다시 세팅 후 시작, 잔동 Thread는 스스로 시작함
-                                WarningActivity.alert_mode = 1;
+                                MainActivity.alert_mode = 1;
                                 player_and_anim();
                             } catch (InterruptedException ex) {
                                 ex.printStackTrace();
                             }
                         }
                         //이건 스페셜 정지(
-                        if(WarningActivity.alert_mode ==3) {
+                        if(MainActivity.alert_mode ==3) {
                             if (player != null) {
                                 player.stop();
                                 Log.v(TAG, "경고음 stop");
@@ -179,7 +175,7 @@ public abstract class ServiceFragment extends Fragment{
     }
     public void player_and_anim(){
         //벨소리
-        player =  MediaPlayer.create(WarningActivity.context, R.raw.alert);
+        player =  MediaPlayer.create(MainActivity.context, R.raw.alert);
         player.start();
         //배경 빨갛게 하얗게
         getView().setBackgroundColor(Color.RED);
@@ -191,7 +187,7 @@ public abstract class ServiceFragment extends Fragment{
         getView().startAnimation(anim);
     }
     public static void alert_stop(){
-        WarningActivity.alert_mode = 0;
+        MainActivity.alert_mode = 0;
         if(triggerService!= null) {
             triggerService.interrupt();
             Log.v(TAG, "진동 thread interrupt");
@@ -201,7 +197,7 @@ public abstract class ServiceFragment extends Fragment{
 
     public void alert_sleep(){
         //일시정지 상태엔 버튼 잠시 누르게 해야해서 2로 설정
-        WarningActivity.alert_mode = 2;
+        MainActivity.alert_mode = 2;
         if(triggerService!= null) {
             triggerService.interrupt();
             Log.v(TAG, "진동 thread interrupt");
@@ -209,7 +205,7 @@ public abstract class ServiceFragment extends Fragment{
     }
     public void alert_stop_special(){
         //일시정지 상태엔 버튼 잠시 누르게 해야해서 2로 설정
-        WarningActivity.alert_mode = 3;
+        MainActivity.alert_mode = 3;
         if(triggerService!= null) {
             triggerService.interrupt();
             Log.v(TAG, "진동 thread interrupt");
@@ -243,7 +239,7 @@ public abstract class ServiceFragment extends Fragment{
             }
         };
         request.setShouldCache(false); //이전 결과 있어도 새로 요청하여 응답을 보여준다.
-        com.example.bleappfornrf52.Services.AppHelper.requestQueue = Volley.newRequestQueue(WarningActivity.context); // requestQueue 초기화 필수
+        com.example.bleappfornrf52.Services.AppHelper.requestQueue = Volley.newRequestQueue(MainActivity.context); // requestQueue 초기화 필수
         com.example.bleappfornrf52.Services.AppHelper.requestQueue.add(request);
         println("요청 보냄.");
 
@@ -294,7 +290,7 @@ public abstract class ServiceFragment extends Fragment{
 
         };
         request.setShouldCache(false); //이전 결과 있어도 새로 요청하여 응답을 보여준다.
-        com.example.bleappfornrf52.Services.AppHelper.requestQueue = Volley.newRequestQueue(WarningActivity.context); // requestQueue 초기화 필수
+        com.example.bleappfornrf52.Services.AppHelper.requestQueue = Volley.newRequestQueue(MainActivity.context); // requestQueue 초기화 필수
         com.example.bleappfornrf52.Services.AppHelper.requestQueue.add(request);
         println("요청 보냄.");
 

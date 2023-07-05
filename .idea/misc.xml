@@ -3,15 +3,29 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout-land/activity_layout.xml" value="0.468694885361552" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout-land/activity_layout.xml" value="0.67" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout-land/fragment_setting.xml" value="0.468694885361552" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_http.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_layout.xml" value="0.31302083333333336" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_main.xml" value="0.5536458333333333" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_main2.xml" value="0.31354166666666666" />
-        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_setting.xml" value="0.5536458333333333" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_main3.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_main6.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_peripherals.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_server.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_setting.xml" value="0.33" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/activity_warning.xml" value="0.33" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/device_element.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/device_list.xml" value="0.5536458333333333" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/dis_values.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/fragment_advertiser.xml" value="0.31302083333333336" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/fragment_nordic_uart.xml" value="0.31354166666666666" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/fragment_service.xml" value="0.5390625" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/fragment_setting.xml" value="0.5536458333333333" />
-        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/fragment_warning.xml" value="0.5536458333333333" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/fragment_warning.xml" value="0.33" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/main.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/message_detail.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/layout/title_bar.xml" value="0.31302083333333336" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/menu/menu_peripheral.xml" value="0.5536458333333333" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/menu/menu_warning.xml" value="0.5536458333333333" />
       </map>

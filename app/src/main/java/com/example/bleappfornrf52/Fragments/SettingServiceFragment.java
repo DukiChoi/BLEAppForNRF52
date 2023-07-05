@@ -19,14 +19,9 @@ package com.example.bleappfornrf52.Fragments;
 import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
-import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.os.Vibrator;
@@ -35,7 +30,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -44,11 +38,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import androidx.core.content.res.TypedArrayUtils;
-
-import com.example.bleappfornrf52.Fragments.ServiceFragment;
 import com.example.bleappfornrf52.R;
-import com.example.bleappfornrf52.WarningActivity;
+import com.example.bleappfornrf52.MainActivity;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -218,7 +209,7 @@ public class SettingServiceFragment extends ServiceFragment {
 //                  RECEIVE_VALUE_FORMAT,
 //                  /* offset */ 1);
                     int newReceiveValue = Integer.parseInt(newReceiveValueString);
-                    WarningActivity.mSendCharacteristic.setValue(newReceiveValue,
+                    MainActivity.mSendCharacteristic.setValue(newReceiveValue,
                             SEND_VALUE_FORMAT,
                             /* offset */ 0);
                 } else {
@@ -231,7 +222,7 @@ public class SettingServiceFragment extends ServiceFragment {
     };
 
 
-    private static final String TAG = WarningActivity.class.getCanonicalName();
+    private static final String TAG = MainActivity.class.getCanonicalName();
     //이건 Notify 버튼 즉 Send 버튼을 리스닝 해주는 함수
     private final View.OnClickListener mNotifyButtonListener = new View.OnClickListener() {
         @Override
@@ -248,28 +239,28 @@ public class SettingServiceFragment extends ServiceFragment {
 //              /* offset */ 0);
             //세번째 방법 세 integer 묶어서 보내기
             //네번째 방법 세 float 묶어서 보내기
-            if(Integer.parseInt(mEditTextSendValue1.getText().toString()) > 0 && Integer.parseInt(mEditTextSendValue2.getText().toString()) > 0 && Integer.parseInt(mEditTextSendValue3.getText().toString()) > 0 && WarningActivity.alert_mode ==0){
+            if(Integer.parseInt(mEditTextSendValue1.getText().toString()) > 0 && Integer.parseInt(mEditTextSendValue2.getText().toString()) > 0 && Integer.parseInt(mEditTextSendValue3.getText().toString()) > 0 && MainActivity.alert_mode ==0){
                 //보내는 값이 각각 0 이상일시에만 send해준다.
                 int int_to_send1 = Integer.parseInt(mEditTextSendValue1.getText().toString());
                 int int_to_send2 = Integer.parseInt(mEditTextSendValue2.getText().toString());
                 int int_to_send3 = Integer.parseInt(mEditTextSendValue3.getText().toString());
-                WarningActivity.distance_setting_value1 = Integer.toString(int_to_send1) + "m";
-                WarningActivity.distance_setting_value2 = Integer.toString(int_to_send2) + "m";
-                WarningActivity.distance_setting_value3 = Integer.toString(int_to_send3) + "m";
+                MainActivity.distance_setting_value1 = Integer.toString(int_to_send1) + "m";
+                MainActivity.distance_setting_value2 = Integer.toString(int_to_send2) + "m";
+                MainActivity.distance_setting_value3 = Integer.toString(int_to_send3) + "m";
 
                 byte[] firstByteArray = new byte[]{0x10};
                 //byte[] newSENDbytes =  joinArrays( firstByteArray, floatToByteArray(float_to_send1), floatToByteArray(float_to_send2), floatToByteArray(float_to_send3));
                 byte[] newSENDbytes = {0x10, (byte)int_to_send1, (byte)int_to_send2, (byte)int_to_send3};
-                WarningActivity.mSendCharacteristic.setValue(newSENDbytes);
+                MainActivity.mSendCharacteristic.setValue(newSENDbytes);
 
                 //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
                 //정확히는 여기에서 NOTIFICATION을 SEND 해준다. (TxChar을 통해서)
                 //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-                mDelegate.sendNotificationToDevices(WarningActivity.mSendCharacteristic);
+                mDelegate.sendNotificationToDevices(MainActivity.mSendCharacteristic);
                 //Log.v(TAG, "sent: " + Arrays.toString(mSendCharacteristic.getValue()) + " / that is: " + bytesToString(mSendCharacteristic.getValue()));
                 Toast.makeText(getActivity(), "거리 값을 세팅하였습니다.",
                         Toast.LENGTH_SHORT).show();
-                Log.v(TAG, "sent: " + Arrays.toString(WarningActivity.mSendCharacteristic.getValue()));
+                Log.v(TAG, "sent: " + Arrays.toString(MainActivity.mSendCharacteristic.getValue()));
                 setSendValue(INITIAL_SEND, INITIAL_RECEIVE);
 
                 //진동 및 알림
@@ -277,7 +268,7 @@ public class SettingServiceFragment extends ServiceFragment {
                 //여기서 HTTP POST로 반경거리 각각 보내준다.
                 POSTRequest("RC");
             }
-            else if (WarningActivity.alert_mode == 1){
+            else if (MainActivity.alert_mode == 1){
                 alert_stop();
                 getView().setBackgroundColor(Color.WHITE);
                 //alert_sleep();
@@ -303,33 +294,33 @@ public class SettingServiceFragment extends ServiceFragment {
     public SettingServiceFragment() {
 
         //이거는 Send
-        WarningActivity.mSendCharacteristic =
+        MainActivity.mSendCharacteristic =
                 new BluetoothGattCharacteristic(SEND_UUID,
                         BluetoothGattCharacteristic.PROPERTY_NOTIFY|BluetoothGattCharacteristic.PROPERTY_READ,
                         /* No permissions */ BluetoothGattCharacteristic.PERMISSION_READ);
 
-        WarningActivity.mSendCharacteristic.addDescriptor(
-                WarningActivity.getClientCharacteristicConfigurationDescriptor());
+        MainActivity.mSendCharacteristic.addDescriptor(
+                MainActivity.getClientCharacteristicConfigurationDescriptor());
 
-        WarningActivity.mSendCharacteristic.addDescriptor(
-                WarningActivity.getCharacteristicUserDescriptionDescriptor(SEND_DESCRIPTION));
+        MainActivity.mSendCharacteristic.addDescriptor(
+                MainActivity.getCharacteristicUserDescriptionDescriptor(SEND_DESCRIPTION));
 
         //이거는 Receive
-        WarningActivity.mReceiveCharacteristic =
+        MainActivity.mReceiveCharacteristic =
                 new BluetoothGattCharacteristic(
                         RECIEVE_UUID,
                         BluetoothGattCharacteristic.PROPERTY_WRITE,
                         BluetoothGattCharacteristic.PERMISSION_WRITE);
 
-        WarningActivity.mReceiveCharacteristic.addDescriptor(WarningActivity.getClientCharacteristicConfigurationDescriptor());
+        MainActivity.mReceiveCharacteristic.addDescriptor(MainActivity.getClientCharacteristicConfigurationDescriptor());
 
-        WarningActivity.mReceiveCharacteristic.addDescriptor(
-                WarningActivity.getCharacteristicUserDescriptionDescriptor(RECEIVE_DESCRIPTION));
+        MainActivity.mReceiveCharacteristic.addDescriptor(
+                MainActivity.getCharacteristicUserDescriptionDescriptor(RECEIVE_DESCRIPTION));
 
-        WarningActivity.mBluetoothGattService = new BluetoothGattService(UART_SERVICE_UUID,
+        MainActivity.mBluetoothGattService = new BluetoothGattService(UART_SERVICE_UUID,
                 BluetoothGattService.SERVICE_TYPE_PRIMARY);
-        WarningActivity.mBluetoothGattService.addCharacteristic(WarningActivity.mSendCharacteristic);
-        WarningActivity.mBluetoothGattService.addCharacteristic(WarningActivity.mReceiveCharacteristic);
+        MainActivity.mBluetoothGattService.addCharacteristic(MainActivity.mSendCharacteristic);
+        MainActivity.mBluetoothGattService.addCharacteristic(MainActivity.mReceiveCharacteristic);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -406,7 +397,7 @@ public class SettingServiceFragment extends ServiceFragment {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public BluetoothGattService getBluetoothGattService() { return WarningActivity.mBluetoothGattService;
+    public BluetoothGattService getBluetoothGattService() { return MainActivity.mBluetoothGattService;
     }
 
     @Override
@@ -433,18 +424,18 @@ public class SettingServiceFragment extends ServiceFragment {
         //보낼 값이니까 Send Characteristic(TxChar)의 value 값을 변경해주는데 byte array형식으로 집어넣는다.
         //이건 앞으로 (uint8형식으로 넣는다는 뜻) flag를 8(uint8)로 맞춰주는 것.
         //mSendCharacteristic.setValue(new byte[]{0b00001000, 0, 0, 0});
-        WarningActivity.mSendCharacteristic.setValue(new byte[]{0});
+        MainActivity.mSendCharacteristic.setValue(new byte[]{0});
         //mReceiveCharacteristic.setValue(new byte[]{0b00001000, 0, 0, 0});
-        WarningActivity.mReceiveCharacteristic.setValue(new byte[]{0});
+        MainActivity.mReceiveCharacteristic.setValue(new byte[]{0});
 
         // Characteristic Value: [flags, 0, 0, 0]
 
 
-        WarningActivity.mSendCharacteristic.setValue(SendValue,
+        MainActivity.mSendCharacteristic.setValue(SendValue,
                 SEND_VALUE_FORMAT,
                 /* offset */ 1);
 
-        WarningActivity.mReceiveCharacteristic.setValue(ReceiveValue,
+        MainActivity.mReceiveCharacteristic.setValue(ReceiveValue,
                 RECEIVE_VALUE_FORMAT,
                 /* offset */ 1);
 
@@ -573,8 +564,8 @@ public class SettingServiceFragment extends ServiceFragment {
     @Override
     public void SendDisconnection(){
         byte[] disconnectionValue = {99};
-        WarningActivity.mSendCharacteristic.setValue(disconnectionValue);
-        mDelegate.sendNotificationToDevices(WarningActivity.mSendCharacteristic);
+        MainActivity.mSendCharacteristic.setValue(disconnectionValue);
+        mDelegate.sendNotificationToDevices(MainActivity.mSendCharacteristic);
         Log.v(TAG, "sent disconnetionValue: " + Arrays.toString(disconnectionValue));
     }
     //float에서 가수값 추출

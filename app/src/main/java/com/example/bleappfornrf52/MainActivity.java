@@ -19,10 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -30,8 +27,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -42,24 +37,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.bleappfornrf52.Fragments.WarningServiceFragment;
 import com.example.bleappfornrf52.Fragments.SettingServiceFragment;
 import com.example.bleappfornrf52.Fragments.ServiceFragment;
-import com.example.bleappfornrf52.Services.AppHelper;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.UUID;
 
-public class WarningActivity extends AppCompatActivity implements ServiceFragment.ServiceFragmentDelegate {
+public class MainActivity extends AppCompatActivity implements ServiceFragment.ServiceFragmentDelegate {
 
 
 
@@ -72,6 +58,9 @@ public class WarningActivity extends AppCompatActivity implements ServiceFragmen
     public static String distance_setting_value1;
     public static String distance_setting_value2;
     public static String distance_setting_value3;
+    public static String magnetic_value_x;
+    public static String magnetic_value_y;
+    public static String magnetic_value_z;
     public static Context context;
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +71,7 @@ public class WarningActivity extends AppCompatActivity implements ServiceFragmen
     Spinner spinner;
     String[] items = {"아이템0","아이템1","아이템2","아이템3","아이템4"};
     private static final int REQUEST_ENABLE_BT = 1;
-    public static final String TAG = WarningActivity.class.getCanonicalName();
+    public static final String TAG = MainActivity.class.getCanonicalName();
     private static final String CURRENT_FRAGMENT_TAG = "CURRENT_FRAGMENT";
 
     private static final UUID CHARACTERISTIC_USER_DESCRIPTION_UUID = UUID
@@ -118,28 +107,28 @@ public class WarningActivity extends AppCompatActivity implements ServiceFragmen
     private static final int INITIAL_RECEIVE = 0;
     //이게 프라이머리 서비스
     private static final UUID UART_SERVICE_UUID = UUID
-            .fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
+            .fromString("6E400001-B5A3-F393-E0A9-E50E24DCC");
 
     /**
      * See <a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.temperature_measurement.xml">
      * Temperature Measurement</a>
      */
 
-    //이건 TxChar UUID 설정 부분 (보내는 Char)
+    //이건 폰 쪽 RxChar UUID 설정 부분 (peripheral 입장에서 보내는 Char 즉 이 폰에서는 read and get notified.)
     private static final UUID SEND_UUID = UUID
-            .fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e");  //RxChar UUID
+            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCC");  //RxChar UUID
     private static final int SEND_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
     private static final String SEND_DESCRIPTION = "This characteristic is used " +
             "as TxChar Nordic Uart device";
 
 
-    //이건 RxChar UUID 설정 부분 (받아오는 Char)
+    //이건 폰 쪽 TxChar UUID 설정 부분 (peripheral 입장에서 받아오는 Char 즉 이 폰에서는 Write.)
     /**
      * See <a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.measurement_interval.xml">
      * Measurement Interval</a>
      */
     private static final UUID RECIEVE_UUID = UUID
-            .fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");  //TxChar UUID
+            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCC");  //TxChar UUID
     private static final int RECEIVE_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
 
 
@@ -253,7 +242,7 @@ public class WarningActivity extends AppCompatActivity implements ServiceFragmen
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(WarningActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
                 Log.e(TAG, "Error when connecting: " + status);
@@ -441,10 +430,10 @@ public class WarningActivity extends AppCompatActivity implements ServiceFragmen
                         /* No permissions */ BluetoothGattCharacteristic.PERMISSION_READ);
 
         mSendCharacteristic.addDescriptor(
-                WarningActivity.getClientCharacteristicConfigurationDescriptor());
+                MainActivity.getClientCharacteristicConfigurationDescriptor());
 
         mSendCharacteristic.addDescriptor(
-                WarningActivity.getCharacteristicUserDescriptionDescriptor(SEND_DESCRIPTION));
+                MainActivity.getCharacteristicUserDescriptionDescriptor(SEND_DESCRIPTION));
 
         //이거는 Receive
         mReceiveCharacteristic =
@@ -453,10 +442,10 @@ public class WarningActivity extends AppCompatActivity implements ServiceFragmen
                         BluetoothGattCharacteristic.PROPERTY_WRITE,
                         BluetoothGattCharacteristic.PERMISSION_WRITE);
 
-        mReceiveCharacteristic.addDescriptor(WarningActivity.getClientCharacteristicConfigurationDescriptor());
+        mReceiveCharacteristic.addDescriptor(MainActivity.getClientCharacteristicConfigurationDescriptor());
 
         mReceiveCharacteristic.addDescriptor(
-                WarningActivity.getCharacteristicUserDescriptionDescriptor(RECEIVE_DESCRIPTION));
+                MainActivity.getCharacteristicUserDescriptionDescriptor(RECEIVE_DESCRIPTION));
 
         mBluetoothGattService = new BluetoothGattService(UART_SERVICE_UUID,
                 BluetoothGattService.SERVICE_TYPE_PRIMARY);
@@ -502,10 +491,10 @@ public class WarningActivity extends AppCompatActivity implements ServiceFragmen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final EditText et = new EditText(WarningActivity.context);
+        final EditText et = new EditText(MainActivity.context);
         if (item.getItemId() == R.id.action_disconnect_devices) {
             //여기서 AlertDialog를 사용해서 온오프시에 확인창 팝업
-            AlertDialog.Builder builder = new AlertDialog.Builder(WarningActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("연결 세팅");
             if (mBluetoothAdapter.isEnabled() && mAdvertiser != null && mBluetoothManager.getConnectedDevices(BluetoothGattServer.GATT).size()>0) {
                 builder.setMessage("연결을 끊을까요?");

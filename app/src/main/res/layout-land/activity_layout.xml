@@ -23,7 +23,46 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context=".ExampleActivities.Peripheral">
+                tools:context=".Fragments.ServiceFragment">
+
+    <TextView
+        android:id="@+id/label_mag_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fragment_container"
+        android:layout_marginStart="32dp"
+        android:text="Magnetic_x:"
+        android:textAppearance="@style/label"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_connectionStatus"
+        app:layout_constraintStart_toEndOf="@+id/textView_connectionStatus"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_container"
+        app:layout_constraintVertical_bias="0.625" />
+
+    <TextView
+        android:id="@+id/label_mag_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fragment_container"
+        android:layout_marginStart="8dp"
+        android:text="Magnetic_y:"
+        android:textAppearance="@style/label"
+        app:layout_constraintBottom_toBottomOf="@+id/label_mag_x"
+        app:layout_constraintStart_toEndOf="@+id/textView_mag_x"
+        app:layout_constraintTop_toTopOf="@+id/label_mag_x"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/label_mag_z"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fragment_container"
+        android:layout_marginStart="4dp"
+        android:text="Magnetic_z:"
+        android:textAppearance="@style/label"
+        app:layout_constraintBottom_toBottomOf="@+id/label_mag_y"
+        app:layout_constraintStart_toEndOf="@+id/textView_mag_y"
+        app:layout_constraintTop_toTopOf="@+id/label_mag_y"
+        app:layout_constraintVertical_bias="1.0" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -45,7 +84,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/fragment_container"
         app:layout_constraintTop_toBottomOf="@+id/fragment_container"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.013" />
 
     <TextView
         android:id="@+id/textView_connectionStatus"
@@ -54,8 +93,42 @@
         android:layout_below="@id/label_connectionStatus"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/text"
+        app:layout_constraintBottom_toBottomOf="@+id/label_connectionStatus"
         app:layout_constraintStart_toEndOf="@+id/label_connectionStatus"
-        app:layout_constraintTop_toTopOf="@+id/label_connectionStatus" /><![CDATA[
+        app:layout_constraintTop_toTopOf="@+id/label_connectionStatus" />
+
+    <TextView
+        android:id="@+id/textView_mag_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_connectionStatus"
+        android:layout_marginStart="8dp"
+        android:textAppearance="@style/text"
+        app:layout_constraintBottom_toBottomOf="@+id/label_mag_x"
+        app:layout_constraintStart_toEndOf="@+id/label_mag_x"
+        app:layout_constraintTop_toTopOf="@+id/label_mag_x" />
+
+    <TextView
+        android:id="@+id/textView_mag_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_connectionStatus"
+        android:layout_marginStart="4dp"
+        android:textAppearance="@style/text"
+        app:layout_constraintBottom_toBottomOf="@+id/label_mag_y"
+        app:layout_constraintStart_toEndOf="@+id/label_mag_y"
+        app:layout_constraintTop_toTopOf="@+id/label_mag_y" />
+
+    <TextView
+        android:id="@+id/textView_mag_z"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_connectionStatus"
+        android:layout_marginStart="8dp"
+        android:textAppearance="@style/text"
+        app:layout_constraintBottom_toBottomOf="@+id/label_mag_z"
+        app:layout_constraintStart_toEndOf="@+id/label_mag_z"
+        app:layout_constraintTop_toTopOf="@+id/label_mag_z" /><![CDATA[
 
     @+id/fragment_container"
         app:layout_constraintVertical_bias="0.0" />
