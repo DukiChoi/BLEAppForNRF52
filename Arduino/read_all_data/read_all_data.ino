@@ -206,9 +206,9 @@ void printEvent(sensors_event_t* event) {
     y = event->magnetic.y;
     z = event->magnetic.z;
     //우선 double로 들어오는 인풋을 char형으로 바꾸어준다.
-    sprintf(x1, "%.2f", x);
-    sprintf(y1, "%.2f", y);
-    sprintf(z1, "%.2f", z);
+    sprintf(x1, "%.1f", x);
+    sprintf(y1, "%.1f", y);
+    sprintf(z1, "%.1f", z);
     // uint8_t arr_x[sizeof(x1)];
     // memcpy(arr_x,&x1,sizeof(x1));
     // arr_x[size_of(arr_x)] = 0;
@@ -219,10 +219,19 @@ void printEvent(sensors_event_t* event) {
     a = strcat(x_message, x1);
     b = strcat(y_message, y1);
     c = strcat(z_message, z1);
+    uint8_t buf_x[strlen(a)];
+    uint8_t buf_y[strlen(b)];
+    uint8_t buf_z[strlen(c)];
+    string2ByteArray(a, buf_x);
+    string2ByteArray(b, buf_y);
+    string2ByteArray(c, buf_z);
+    bleuart.write(buf_x, sizeof(buf_x));
+    bleuart.write(buf_y, sizeof(buf_y));
+    bleuart.write(buf_z, sizeof(buf_z));
     strcat(b, c);
     strcat(a, b);
     Serial.print(a);
-    uint8_t buf[strlen(a)];
+
     Serial.print(" | ");
     Serial.print(strlen(x1));
     Serial.print(" | ");
@@ -233,8 +242,7 @@ void printEvent(sensors_event_t* event) {
     Serial.print(strlen(a));
     Serial.print(" | ");
     
-    string2ByteArray(a, buf);
-    bleuart.write(buf, sizeof(buf));
+
   }
   
   else if (event->type == SENSOR_TYPE_GYROSCOPE) {
