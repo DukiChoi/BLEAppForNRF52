@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
     public static String distance_setting_value1;
     public static String distance_setting_value2;
     public static String distance_setting_value3;
-    public static String magnetic_value_x;
-    public static String magnetic_value_y;
-    public static String magnetic_value_z;
+    public static String magnetic_value_x = "0";
+    public static String magnetic_value_y = "0";
+    public static String magnetic_value_z = "0";
     public static Context context;
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
     private static final int INITIAL_RECEIVE = 0;
     //이게 프라이머리 서비스
     private static final UUID UART_SERVICE_UUID = UUID
-            .fromString("6E400001-B5A3-F393-E0A9-E50E24DCC");
+            .fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
 
     /**
      * See <a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.temperature_measurement.xml">
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
 
     //이건 폰 쪽 RxChar UUID 설정 부분 (peripheral 입장에서 받는 Char ... 이 폰은 peripheral이므로 getting notified..)
     private static final UUID SEND_UUID = UUID
-            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCC");  //상대의 TxChar UUID
+            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");  //상대의 TxChar UUID
     private static final int SEND_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
     private static final String SEND_DESCRIPTION = "This characteristic is used " +
             "as TxChar Nordic Uart device";
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
      * Measurement Interval</a>
      */
     private static final UUID RECIEVE_UUID = UUID
-            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCC");  //상대의 RxChar UUID
+            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");  //상대의 RxChar UUID
     private static final int RECEIVE_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
 
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
     private final long finishtime = 1000;
     private long presstime = 0;
     public static int alert_mode = 0;
-    public static String device_name = "Bluefruit52 Central";
+    public static String device_name = "BLE App";
 
     public int connected_count = 0;
 
@@ -164,6 +164,9 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
     }
     //private TextView mAdvStatus;
     private TextView mConnectionStatus;
+    public static TextView mMagValue_x;
+    public static TextView mMagValue_y;
+    public static TextView mMagValue_z;
     private ServiceFragment mCurrentServiceFragment;
     public static BluetoothGattService mBluetoothGattService;
     private HashSet<BluetoothDevice> mBluetoothDevices;
@@ -391,7 +394,9 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
         mBluetoothDevices = new HashSet<>();
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
-
+        mMagValue_x = (TextView) findViewById(R.id.textView_mag_x);
+        mMagValue_y = (TextView) findViewById(R.id.textView_mag_y);
+        mMagValue_z = (TextView) findViewById(R.id.textView_mag_z);
         //정확히 여기서 4가지 서비스 중 한개로 넘어가는 것 ㅇㅇ Peripherals에서 받아온 리스트 인덱스 번호
         //EXTRA_PERIPHERAL_INDEX를 가지고 어떤 서비스로 넘어갈지 판단한다.
         //If we are not being restored from a previous state then create and add the fragment.

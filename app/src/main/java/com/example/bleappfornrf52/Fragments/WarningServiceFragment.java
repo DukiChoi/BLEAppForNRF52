@@ -80,7 +80,7 @@ public class WarningServiceFragment extends ServiceFragment {
     private static final int INITIAL_RECEIVE = 0;
     //이게 프라이머리 서비스
     private static final UUID UART_SERVICE_UUID = UUID
-            .fromString("6E400001-B5A3-F393-E0A9-E50E24DCC");
+            .fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
 
     /**
      * See <a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.temperature_measurement.xml">
@@ -89,7 +89,7 @@ public class WarningServiceFragment extends ServiceFragment {
 
     //이건 TxChar UUID 설정 부분 (보내는 Char)
     private static final UUID SEND_UUID = UUID
-            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCC");  //RxChar UUID
+            .fromString("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");  //RxChar UUID
     private static final int SEND_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
     private static final String SEND_DESCRIPTION = "This characteristic is used " +
             "as TxChar Nordic Uart device";
@@ -101,7 +101,7 @@ public class WarningServiceFragment extends ServiceFragment {
      * Measurement Interval</a>
      */
     private static final UUID RECIEVE_UUID = UUID
-            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCC");  //TxChar UUID
+            .fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");  //TxChar UUID
     private static final int RECEIVE_VALUE_FORMAT = BluetoothGattCharacteristic.FORMAT_UINT8;
 
 
@@ -140,9 +140,7 @@ public class WarningServiceFragment extends ServiceFragment {
     private TextView mTextViewDistanceValue1;
     private TextView mTextViewDistanceValue2;
     private TextView mTextViewDistanceValue3;
-    private TextView mMagValuex;
-    private TextView mMagValuey;
-    private TextView mMagValuez;
+
     //이건 Text Editor에 수정을 할 시에 그걸 가지고 보낼 값(Characteristic Value)을 바꾸는 것.
     private final OnEditorActionListener mOnEditorActionListenerSend = new OnEditorActionListener() {
         @Override
@@ -299,12 +297,7 @@ public class WarningServiceFragment extends ServiceFragment {
                 .findViewById(R.id.Textview_distance_warning);
         mTextViewDistanceValue3 = (TextView) view
                 .findViewById(R.id.Textview_distance_safe);
-        mMagValuex = (TextView) view
-                .findViewById(R.id.textView_mag_x);
-        mMagValuey = (TextView) view
-                .findViewById(R.id.textView_mag_y);
-        mMagValuez = (TextView) view
-                .findViewById(R.id.textView_mag_z);
+
         //여기서 Editor 리스너를 써줬기는 한데 여기선 사실상 필요가 없다.(EditText 대신 TextView 써줘서 ㅇㅇ)
 //    mTextViewReceiveValue1
 //            .setOnEditorActionListener(mOnEditorActionListenerReceive);
@@ -441,9 +434,9 @@ public class WarningServiceFragment extends ServiceFragment {
                 alert_value1 = members[0];
                 alert_value2 = members[1];
                 alert_value3 = members[2];
-                MainActivity.distance_setting_value1 = Integer.toString(Byte.toUnsignedInt(value[8])) + "m";
-                MainActivity.distance_setting_value2 = Integer.toString(Byte.toUnsignedInt(value[9])) + "m";
-                MainActivity.distance_setting_value3 = Integer.toString(Byte.toUnsignedInt(value[10])) + "m";
+//                MainActivity.distance_setting_value1 = Integer.toString(Byte.toUnsignedInt(value[8])) + "m";
+//                MainActivity.distance_setting_value2 = Integer.toString(Byte.toUnsignedInt(value[9])) + "m";
+//                MainActivity.distance_setting_value3 = Integer.toString(Byte.toUnsignedInt(value[10])) + "m";
                 Log.v(TAG, "members are: " + alert_value1 + ", " + alert_value2 + ", " + alert_value3);
                 //두번째 방법, Integer로 받기([값]형태)
                 //mTextViewReceiveValue.setText(Arrays.toString(value));
@@ -454,9 +447,7 @@ public class WarningServiceFragment extends ServiceFragment {
                 mTextViewDistanceValue1.setText(MainActivity.distance_setting_value1);
                 mTextViewDistanceValue2.setText(MainActivity.distance_setting_value2);
                 mTextViewDistanceValue3.setText(MainActivity.distance_setting_value3);
-                mMagValuex.setText(MainActivity.magnetic_value_x);
-                mMagValuey.setText(MainActivity.magnetic_value_y);
-                mMagValuez.setText(MainActivity.magnetic_value_z);
+
                 //위험반경 내부로 들어간 작업자기 생기면 알림
                 if(alert_value1 > 0  && MainActivity.alert_mode == 0){
                     //진동 및 알림
@@ -570,40 +561,44 @@ public class WarningServiceFragment extends ServiceFragment {
         //0001010202030303010203
         //0002010202030303010203
         int[] xyzlocation = {0,0,0};
-        byte[] x_mag = {};
-        byte[] y_mag = {};
-        byte[] z_mag = {};
+        byte[] x_mag = new byte[value.length-2];
+        byte[] y_mag = new byte[value.length-2];
+        byte[] z_mag = new byte[value.length-2];
         int[] member_for_distances = {0, 0, 0};
         for(int i = 0; i < value.length; i++ ){
-            if(value[i] == 0x78){
-                xyzlocation[0] = i;
+            if(value[0] == 0x78){
+                System.arraycopy(value, 2, x_mag, 0, value.length-2);
+                MainActivity.magnetic_value_x = bytesToString(x_mag);
+                MainActivity.mMagValue_x.setText(MainActivity.magnetic_value_x);
+                Log.v(TAG, "Magnetic X is: " + MainActivity.magnetic_value_x);
             }else if(value[i] == 0x79){
-                xyzlocation[1] = i;
+                System.arraycopy(value, 2, y_mag, 0, value.length-2);
+                MainActivity.magnetic_value_y = bytesToString(y_mag);
+                MainActivity.mMagValue_y.setText(MainActivity.magnetic_value_y);
+                Log.v(TAG, "Magnetic Y is: " + MainActivity.magnetic_value_y);
             }else if(value[i] == 0x7A){
-                xyzlocation[2] = i;
+                System.arraycopy(value, 2, z_mag, 0, value.length-2);
+                MainActivity.magnetic_value_z = bytesToString(z_mag);
+                MainActivity.mMagValue_z.setText(MainActivity.magnetic_value_z);
+                Log.v(TAG, "Magnetic Z is: " + MainActivity.magnetic_value_z);
             }
         }
-        //x:숫자y:숫자z:숫자 이런 식으로 되어있어서 고려해줘서 1이 아닌 2를 빼야되네..
-        System.arraycopy(value, xyzlocation[0]+2, x_mag, 0, xyzlocation[1]-xyzlocation[0]-2);
-        System.arraycopy(value, xyzlocation[0]+2, y_mag, 0, xyzlocation[1]-xyzlocation[0]-2);
-        System.arraycopy(value, xyzlocation[0]+2, z_mag, 0, xyzlocation[1]-xyzlocation[0]-2);
-        MainActivity.magnetic_value_x = bytesToString(x_mag);
-        MainActivity.magnetic_value_y = bytesToString(y_mag);
-        MainActivity.magnetic_value_z = bytesToString(z_mag);
-        for(int i = 0; i < 4; i++){
-            //위험반경인 사람 수
-            if(Math.abs(Float.parseFloat(bytesToString(x_mag))) > 1000){
-                member_for_distances[0]++;
-            }
-            //경고반경인 사람 수
-            else if(Math.abs(Float.parseFloat(bytesToString(y_mag))) > 500){
-                member_for_distances[1]++;
-            }
-            //접근반경인 사람 수;
-            else if(Math.abs(Float.parseFloat(bytesToString(z_mag))) > 0){
-                member_for_distances[2]++;
-            }
+
+
+
+        //위험반경인 사람 수
+        if(Math.abs(Float.parseFloat(MainActivity.magnetic_value_x)) > 1000 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_y)) > 1000 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_z)) > 1000){
+            member_for_distances[0]++;
         }
+        //경고반경인 사람 수
+        else if(Math.abs(Float.parseFloat(MainActivity.magnetic_value_x)) > 400 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_y)) > 400 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_z)) > 400){
+            member_for_distances[1]++;
+        }
+        //접근반경인 사람 수;
+        else if(Math.abs(Float.parseFloat(MainActivity.magnetic_value_x)) > 100 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_y)) > 100 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_z)) > 100){
+            member_for_distances[2]++;
+        }
+
         return member_for_distances;
     }
     @Override
