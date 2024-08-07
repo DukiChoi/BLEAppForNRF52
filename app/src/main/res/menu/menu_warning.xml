@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_disconnect_devices"
-        android:title="연결 on/off"
+        android:title="Connect/Disconnect"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_warning"

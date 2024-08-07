@@ -500,12 +500,12 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
         if (item.getItemId() == R.id.action_disconnect_devices) {
             //여기서 AlertDialog를 사용해서 온오프시에 확인창 팝업
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("연결 세팅");
+            builder.setTitle("Connection Setting");
             if (mBluetoothAdapter.isEnabled() && mAdvertiser != null && mBluetoothManager.getConnectedDevices(BluetoothGattServer.GATT).size()>0) {
-                builder.setMessage("연결을 끊을까요?");
+                builder.setMessage("Do you want to Disconnect?");
             }
             else if(mBluetoothAdapter.isEnabled() && mAdvertiser != null && mBluetoothManager.getConnectedDevices(BluetoothGattServer.GATT).size()==0){
-                builder.setMessage("연결 시도를 중지할까요?");
+                builder.setMessage("Do you want to cancel the connection attempt?");
             }
             else if (mBluetoothAdapter.isEnabled() && mAdvertiser == null) {
                 //여기서 EditText를 넣어준다.
@@ -514,11 +514,11 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
                     et.setText(device_name);
                 et.setOnEditorActionListener(mOnDeviceNameEditorActionListenerSend);
                 builder.setIcon(R.drawable.black_gear).setView(et);
-                builder.setMessage("연결을 시작할까요? (디바이스 이름을 적어주세요)");
+                builder.setMessage("Start Connection? (Please write the name of the device)");
             }
 
 
-            builder.setPositiveButton("예",
+            builder.setPositiveButton("YES",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // on/off작업
@@ -542,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
                             }
                         }
                     });
-            builder.setNegativeButton("아니오",
+            builder.setNegativeButton("NO",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // do nothing
