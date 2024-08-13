@@ -561,44 +561,75 @@ public class WarningServiceFragment extends ServiceFragment {
         //0001010202030303010203
         //0002010202030303010203
         int[] xyzlocation = {0,0,0};
-        byte[] x_mag = new byte[value.length-2];
-        byte[] y_mag = new byte[value.length-2];
-        byte[] z_mag = new byte[value.length-2];
+
+        //원래는 이렇게 x,y,z 를 "x:","y:","z:" 으로 구분하였음.. 엄청 비효율적.
         int[] member_for_distances = {0, 0, 0};
-        for(int i = 0; i < value.length; i++ ){
-            if(value[0] == 0x78){
-                System.arraycopy(value, 2, x_mag, 0, value.length-2);
-                MainActivity.magnetic_value_x = bytesToString(x_mag);
-                MainActivity.mMagValue_x.setText(MainActivity.magnetic_value_x);
-                Log.v(TAG, "Magnetic X is: " + MainActivity.magnetic_value_x);
-            }else if(value[i] == 0x79){
-                System.arraycopy(value, 2, y_mag, 0, value.length-2);
-                MainActivity.magnetic_value_y = bytesToString(y_mag);
-                MainActivity.mMagValue_y.setText(MainActivity.magnetic_value_y);
-                Log.v(TAG, "Magnetic Y is: " + MainActivity.magnetic_value_y);
-            }else if(value[i] == 0x7A){
-                System.arraycopy(value, 2, z_mag, 0, value.length-2);
-                MainActivity.magnetic_value_z = bytesToString(z_mag);
-                MainActivity.mMagValue_z.setText(MainActivity.magnetic_value_z);
-                Log.v(TAG, "Magnetic Z is: " + MainActivity.magnetic_value_z);
-            }
+//
+//        byte[] x_mag = new byte[value.length-2];
+//        byte[] y_mag = new byte[value.length-2];
+//        byte[] z_mag = new byte[value.length-2];
+
+//        for(int i = 0; i < value.length; i++ ){
+//            if(value[0] == 0x78){
+//                System.arraycopy(value, 2, x_mag, 0, value.length-2);
+//                MainActivity.magnetic_value_x = bytesToString(x_mag);
+//                MainActivity.mMagValue_x.setText(MainActivity.magnetic_value_x);
+//                Log.v(TAG, "Magnetic X is: " + MainActivity.magnetic_value_x);
+//            }else if(value[i] == 0x79){
+//                System.arraycopy(value, 2, y_mag, 0, value.length-2);
+//                MainActivity.magnetic_value_y = bytesToString(y_mag);
+//                MainActivity.mMagValue_y.setText(MainActivity.magnetic_value_y);
+//                Log.v(TAG, "Magnetic Y is: " + MainActivity.magnetic_value_y);
+//            }else if(value[i] == 0x7A){
+//                System.arraycopy(value, 2, z_mag, 0, value.length-2);
+//                MainActivity.magnetic_value_z = bytesToString(z_mag);
+//                MainActivity.mMagValue_z.setText(MainActivity.magnetic_value_z);
+//                Log.v(TAG, "Magnetic Z is: " + MainActivity.magnetic_value_z);
+//            }
+//        }
+        float[] x = new float[3];
+        float[] y = new float[3];
+        int index = 0;
+        for (int i = 0; i < 3; i++) {
+            short decompressed = (short)((value[index++] << 8) | (value[index++] & 0xFF));
+            x[i] = (float)(decompressed / 100.0); // 소수점을 복원
+        }
+        for (int i = 0; i < 3; i++) {
+            short decompressed = (short)((value[index++] << 8) | (value[index++] & 0xFF));
+            y[i] = (float)(decompressed / 100.0); // 소수점을 복원
         }
 
+        // 첫 번째 자력계에서의 자기장 벡터 크기 계산
+        float B1 = calculateMagnitude(x[0], x[1], x[2]);
+        // 두 번째 자력계에서의 자기장 벡터 크기 계산
+        float B2 = calculateMagnitude(y[0], y[1], y[2]);
+        // 두 자력계의 평균 자기장 크기 계산
+        float Magnitude = (B1 + B2) / 2.0f;
 
+        MainActivity.magnetic_value_x = String.valueOf(x[0]);
+        MainActivity.magnetic_value_y = String.valueOf(x[1]);
+        MainActivity.magnetic_value_z = String.valueOf(x[2]);
+        MainActivity.magnetic_value_x2 = String.valueOf(y[0]);
+        MainActivity.magnetic_value_y2 = String.valueOf(y[1]);
+        MainActivity.magnetic_value_z2 = String.valueOf(y[2]);
+        MainActivity.mMagValue_x.setText(MainActivity.magnetic_value_x);
+        MainActivity.mMagValue_y.setText(MainActivity.magnetic_value_y);
+        MainActivity.mMagValue_z.setText(MainActivity.magnetic_value_z);
 
+        Log.v(TAG, "Mag1: x- " + MainActivity.magnetic_value_x + " y-" + MainActivity.magnetic_value_y + " z-" + MainActivity.magnetic_value_z);
+        Log.v(TAG, "Mag2: x- " + MainActivity.magnetic_value_x2 + " y-" + MainActivity.magnetic_value_y2 + " z-" + MainActivity.magnetic_value_z2);
         //위험반경인 사람 수
-        if(Math.abs(Float.parseFloat(MainActivity.magnetic_value_x)) > 1000 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_y)) > 1000 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_z)) > 1000){
+        if(Math.abs(Magnitude) > 500){
             member_for_distances[0]++;
         }
         //경고반경인 사람 수
-        else if(Math.abs(Float.parseFloat(MainActivity.magnetic_value_x)) > 400 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_y)) > 400 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_z)) > 400){
+        else if(Math.abs(Magnitude) > 300){
             member_for_distances[1]++;
         }
         //접근반경인 사람 수;
-        else if(Math.abs(Float.parseFloat(MainActivity.magnetic_value_x)) > 100 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_y)) > 100 || Math.abs(Float.parseFloat(MainActivity.magnetic_value_z)) > 100){
+        else if(Math.abs(Magnitude) > 100){
             member_for_distances[2]++;
         }
-
         return member_for_distances;
     }
     @Override
@@ -608,6 +639,8 @@ public class WarningServiceFragment extends ServiceFragment {
         mDelegate.sendNotificationToDevices(MainActivity.mSendCharacteristic);
         Log.v(TAG, "sent disconnetionValue: " + Arrays.toString(disconnectionValue));
     }
-
+    public static float calculateMagnitude(double x, double y, double z) {
+        return (float) Math.sqrt(x * x + y * y + z * z);
+    }
 
 }

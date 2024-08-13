@@ -29,6 +29,11 @@
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/menu/menu_peripheral.xml" value="0.5536458333333333" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/menu/menu_setting.xml" value="0.3921875" />
         <entry key="..\:/Users/cbcc1/AndroidStudioProjects/BLEAppForNRF52/app/src/main/res/menu/menu_warning.xml" value="0.5536458333333333" />
+        <entry key="app/src/main/res/layout-land/activity_layout.xml" value="0.3619929453262787" />
+        <entry key="app/src/main/res/layout/activity_layout.xml" value="0.31567028985507245" />
+        <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.31567028985507245" />
+        <entry key="app/src/main/res/layout/fragment_warning.xml" value="0.21927083333333333" />
+        <entry key="app/src/main/res/layout/title_bar.xml" value="0.31567028985507245" />
       </map>
     </option>
   </component>

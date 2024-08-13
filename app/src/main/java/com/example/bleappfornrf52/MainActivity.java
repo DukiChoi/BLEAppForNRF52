@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
     public static String magnetic_value_x = "0";
     public static String magnetic_value_y = "0";
     public static String magnetic_value_z = "0";
+    public static String magnetic_value_x2 = "0";
+    public static String magnetic_value_y2 = "0";
+    public static String magnetic_value_z2 = "0";
     public static Context context;
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
