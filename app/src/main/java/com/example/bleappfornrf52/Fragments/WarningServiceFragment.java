@@ -421,55 +421,56 @@ public class WarningServiceFragment extends ServiceFragment {
         if (value.length > 1000) {
             return BluetoothGatt.GATT_INVALID_ATTRIBUTE_LENGTH;
         }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        else if(value.length == 20) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 //        //첫번째 방법, byte 형식을 String 형식으로 바꿔서 받기
 //        //이 부분에서 아스키 코드로 된 btye array를 string으로 변환해줌
 //        mTextViewReceiveValue.setText(bytesToString(value));
 //        //로그에서 원래 아스키코드 배열과 / 변환되어 나온 string값을 보여줌
 //        Log.v(TAG, "Received: " + Arrays.toString(value) + " / converted into:" + bytesToString(value));
-                //여기서 이제 Value를 [태그1, 위험정보, 태그2, 위험정보, 태그3, 위험정보, 태그4, 위험정보, 위험, 경고, 접근] 로 받기로 했으므로,
-                int[] members = classification(value);
-                alert_value1 = members[0];
-                alert_value2 = members[1];
-                alert_value3 = members[2];
+                    //여기서 이제 Value를 [태그1, 위험정보, 태그2, 위험정보, 태그3, 위험정보, 태그4, 위험정보, 위험, 경고, 접근] 로 받기로 했으므로,
+                    int[] members = classification(value);
+                    alert_value1 = members[0];
+                    alert_value2 = members[1];
+                    alert_value3 = members[2];
 //                MainActivity.distance_setting_value1 = Integer.toString(Byte.toUnsignedInt(value[8])) + "m";
 //                MainActivity.distance_setting_value2 = Integer.toString(Byte.toUnsignedInt(value[9])) + "m";
 //                MainActivity.distance_setting_value3 = Integer.toString(Byte.toUnsignedInt(value[10])) + "m";
-                Log.v(TAG, "members are: " + alert_value1 + ", " + alert_value2 + ", " + alert_value3);
-                //두번째 방법, Integer로 받기([값]형태)
-                //mTextViewReceiveValue.setText(Arrays.toString(value));
+                    Log.v(TAG, "members are: " + alert_value1 + ", " + alert_value2 + ", " + alert_value3);
+                    //두번째 방법, Integer로 받기([값]형태)
+                    //mTextViewReceiveValue.setText(Arrays.toString(value));
 
-                mTextViewReceiveValue1.setText(String.valueOf(alert_value1));
-                mTextViewReceiveValue2.setText(String.valueOf(alert_value2));
-                mTextViewReceiveValue3.setText(String.valueOf(alert_value3));
-                mTextViewDistanceValue1.setText(MainActivity.distance_setting_value1);
-                mTextViewDistanceValue2.setText(MainActivity.distance_setting_value2);
-                mTextViewDistanceValue3.setText(MainActivity.distance_setting_value3);
+                    mTextViewReceiveValue1.setText(String.valueOf(alert_value1));
+                    mTextViewReceiveValue2.setText(String.valueOf(alert_value2));
+                    mTextViewReceiveValue3.setText(String.valueOf(alert_value3));
+                    mTextViewDistanceValue1.setText(MainActivity.distance_setting_value1);
+                    mTextViewDistanceValue2.setText(MainActivity.distance_setting_value2);
+                    mTextViewDistanceValue3.setText(MainActivity.distance_setting_value3);
 
-                //위험반경 내부로 들어간 작업자기 생기면 알림
-                if(alert_value1 > 0  && MainActivity.alert_mode == 0){
-                    //진동 및 알림
-                    alert();
-                }
-                //위험반경 내부에 있지 않게 되면 알람을 정지
-                else if (alert_value1 == 0 && MainActivity.alert_mode == 1){
-                    alert_stop();
-                    getView().setBackgroundColor(Color.WHITE);
-                }
-                else if(MainActivity.alert_mode == 3){
-                    if(alert_value1 > alert_value1_temp)
+                    //위험반경 내부로 들어간 작업자기 생기면 알림
+                    if (alert_value1 > 0 && MainActivity.alert_mode == 0) {
+                        //진동 및 알림
                         alert();
-                    else if(alert_value1 < alert_value1_temp){
-                        alert_value1_temp = alert_value1;
                     }
-                }
+                    //위험반경 내부에 있지 않게 되면 알람을 정지
+                    else if (alert_value1 == 0 && MainActivity.alert_mode == 1) {
+                        alert_stop();
+                        getView().setBackgroundColor(Color.WHITE);
+                    } else if (MainActivity.alert_mode == 3) {
+                        if (alert_value1 > alert_value1_temp)
+                            alert();
+                        else if (alert_value1 < alert_value1_temp) {
+                            alert_value1_temp = alert_value1;
+                        }
+                    }
 
-                //로그에서 원래 아스키코드 배열과 / 변환되어 나온 string값을 보여줌
-                Log.v(TAG, "Received: " + Arrays.toString(value));
-            }
-        });
+                    //로그에서 원래 아스키코드 배열과 / 변환되어 나온 string값을 보여줌
+                    Log.v(TAG, "Received: " + Arrays.toString(value));
+                }
+            });
+        }
         return BluetoothGatt.GATT_SUCCESS;
     }
 
@@ -590,6 +591,7 @@ public class WarningServiceFragment extends ServiceFragment {
         float[] x = new float[3];
         float[] y = new float[3];
         int index = 0;
+
         for (int i = 0; i < 3; i++) {
             short decompressed = (short)((value[index++] << 8) | (value[index++] & 0xFF));
             x[i] = (float)(decompressed / 100.0); // 소수점을 복원
