@@ -600,8 +600,12 @@ public class MainActivity extends AppCompatActivity implements ServiceFragment.S
 //            // pointer exception is raised.
 //            mAdvertiser.stopAdvertising(mAdvCallback);
 //        }
+        //이 부분은 바깥으로 잠깐 나와도 호출되기때문에... 연결중지 ㄴㄴ
+//        disconnectFromDevices();
+//        finish();
         resetStatusViews();
     }
+
 
     @Override
     public void onBackPressed() {

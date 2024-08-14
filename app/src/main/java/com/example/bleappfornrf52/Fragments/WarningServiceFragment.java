@@ -34,9 +34,12 @@ import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
 
 import com.example.bleappfornrf52.R;
 import com.example.bleappfornrf52.MainActivity;
@@ -225,7 +228,7 @@ public class WarningServiceFragment extends ServiceFragment {
             if (MainActivity.alert_mode == 1){
                 alert_stop_special();
                 alert_value1_temp = alert_value1;
-                getView().setBackgroundColor(Color.WHITE);
+                getView().setBackgroundColor(Color.TRANSPARENT);
             }
         }
     };
@@ -297,7 +300,8 @@ public class WarningServiceFragment extends ServiceFragment {
                 .findViewById(R.id.Textview_distance_warning);
         mTextViewDistanceValue3 = (TextView) view
                 .findViewById(R.id.Textview_distance_safe);
-
+        ImageView imageView3 = (ImageView) view.findViewById(R.id.imageView3);
+        ViewCompat.setTranslationZ(imageView3, -1f); // Z축을 -1로 설정하여 뒤로 보냄
         //여기서 Editor 리스너를 써줬기는 한데 여기선 사실상 필요가 없다.(EditText 대신 TextView 써줘서 ㅇㅇ)
 //    mTextViewReceiveValue1
 //            .setOnEditorActionListener(mOnEditorActionListenerReceive);
@@ -457,7 +461,7 @@ public class WarningServiceFragment extends ServiceFragment {
                     //위험반경 내부에 있지 않게 되면 알람을 정지
                     else if (alert_value1 == 0 && MainActivity.alert_mode == 1) {
                         alert_stop();
-                        getView().setBackgroundColor(Color.WHITE);
+                        getView().setBackgroundColor(Color.TRANSPARENT);
                     } else if (MainActivity.alert_mode == 3) {
                         if (alert_value1 > alert_value1_temp)
                             alert();
@@ -607,7 +611,7 @@ public class WarningServiceFragment extends ServiceFragment {
         float B2 = calculateMagnitude(y[0], y[1], y[2]);
         // 두 자력계의 평균 자기장 크기 계산
         float Magnitude = (B1 + B2) / 2.0f;
-
+        Log.v(TAG, "Magnitude = " + Magnitude);
         MainActivity.magnetic_value_x = String.valueOf(x[0]);
         MainActivity.magnetic_value_y = String.valueOf(x[1]);
         MainActivity.magnetic_value_z = String.valueOf(x[2]);
@@ -621,15 +625,15 @@ public class WarningServiceFragment extends ServiceFragment {
         Log.v(TAG, "Mag1: x- " + MainActivity.magnetic_value_x + " y-" + MainActivity.magnetic_value_y + " z-" + MainActivity.magnetic_value_z);
         Log.v(TAG, "Mag2: x- " + MainActivity.magnetic_value_x2 + " y-" + MainActivity.magnetic_value_y2 + " z-" + MainActivity.magnetic_value_z2);
         //위험반경인 사람 수
-        if(Math.abs(Magnitude) > 500){
+        if(Magnitude > 150){
             member_for_distances[0]++;
         }
         //경고반경인 사람 수
-        else if(Math.abs(Magnitude) > 300){
+        else if(Magnitude > 100){
             member_for_distances[1]++;
         }
         //접근반경인 사람 수;
-        else if(Math.abs(Magnitude) > 100){
+        else if(Magnitude > 80){
             member_for_distances[2]++;
         }
         return member_for_distances;
@@ -641,7 +645,7 @@ public class WarningServiceFragment extends ServiceFragment {
         mDelegate.sendNotificationToDevices(MainActivity.mSendCharacteristic);
         Log.v(TAG, "sent disconnetionValue: " + Arrays.toString(disconnectionValue));
     }
-    public static float calculateMagnitude(double x, double y, double z) {
+    public static float calculateMagnitude(float x, float y, float z) {
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
 

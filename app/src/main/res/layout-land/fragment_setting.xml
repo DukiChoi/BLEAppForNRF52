@@ -65,8 +65,8 @@
 
     <TextView
         android:id="@+id/label_접근"
-        android:layout_width="64dp"
-        android:layout_height="24dp"
+        android:layout_width="79dp"
+        android:layout_height="26dp"
         android:layout_marginStart="20dp"
         android:text="Approach"
         android:textStyle="bold"
