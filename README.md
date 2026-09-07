@@ -6,9 +6,9 @@
 ![When connected to the central](connected.png)
 ![disconnecting](disconnect.png)
 
-This project is to connect 3 devices in a row. In a physical world, the BT signal encounters too many disturbances, so using only 1 feather board we cannot reach the user holding phone if he or she is at quite a distance.
-So I thought using one more feather board as a repeater would be better. 
-I chose the app to be a peripheral not central, because a repeater in the middle of two devices should be central to connect to 2 individual peripheral devices on different sides.
+This project addresses the limited range of Bluetooth Low Energy (BLE) communication in real-world deployment scenarios. In physical environments, BLE signals are subject to substantial attenuation and interference, such that a single Feather board is often insufficient to establish a reliable connection with a user's mobile device located at a considerable distance. To address this limitation, an additional Feather board was introduced as a signal repeater positioned between the two endpoints.
+
+Because a repeater situated between two devices must simultaneously establish connections with two independent peripheral devices on either side, the repeater was configured to operate in the central role. Accordingly, the mobile application was designated as a peripheral device, thereby enabling the intermediate node to initiate and manage both connections concurrently.
 
 
 ## License Information
